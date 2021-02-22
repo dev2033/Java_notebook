@@ -1,6 +1,8 @@
 package com.example.javanotebook;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         rcView = findViewById(R.id.rcView);
         mainAdapter = new MainAdapter(this);
         rcView.setLayoutManager(new LinearLayoutManager(this));
+        getItemTouchHelper().attachToRecyclerView(rcView);
         rcView.setAdapter(mainAdapter);
     }
 
@@ -82,5 +85,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         myDbManager.closeDb();
+    }
+
+    private ItemTouchHelper getItemTouchHelper() {
+        /*
+        * Свайп по элементу (RecyclerView) списка с записями (ЛЕВО и ПРАВО)
+        * */
+        return new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+        });
     }
 }

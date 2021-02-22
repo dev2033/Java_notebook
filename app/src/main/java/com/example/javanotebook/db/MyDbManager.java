@@ -29,7 +29,9 @@ public class MyDbManager {
     }
 
     public void insertToDb(String title, String desc, String uri) {
-        /*Записывает данные в БД*/
+        /*
+        * Записывает данные в БД
+        * */
         ContentValues cv = new ContentValues();
         cv.put(MyConstants.TITLE, title);
         cv.put(MyConstants.DESC, desc);
@@ -37,6 +39,12 @@ public class MyDbManager {
 
         // записывает данные в таблицу
         db.insert(MyConstants.TABLE_NAME, null, cv);
+    }
+
+    public void delete(int id) {
+        /*
+        * Удаляет данные из БД
+        * */
     }
 
     public List<ListItem> getFromDb(String searchText) {
