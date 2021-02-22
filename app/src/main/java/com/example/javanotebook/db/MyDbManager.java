@@ -26,11 +26,12 @@ public class MyDbManager {
         db = myDbHelper.getWritableDatabase();
     }
 
-    public void insertToDb(String title, String desc) {
+    public void insertToDb(String title, String desc, String uri) {
         /*Записывает данные в БД*/
         ContentValues cv = new ContentValues();
         cv.put(MyConstants.TITLE, title);
         cv.put(MyConstants.DESC, desc);
+        cv.put(MyConstants.URI, uri);
 
         // записывает данные в таблицу
         db.insert(MyConstants.TABLE_NAME, null, cv);
