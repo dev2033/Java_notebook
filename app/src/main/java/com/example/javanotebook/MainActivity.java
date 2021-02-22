@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -44,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
         mainAdapter.updateAdapter(myDbManager.getFromDb());
     }
 
-    public void onClickSave(View view) {
-        /*Сохранение в базу данных*/
-        myDbManager.insertToDb(edTitle.getText().toString(), edDesc.getText().toString());
+    public void onClickAdd(View view) {
+        Intent intent = new Intent(MainActivity.this, EditActivity.class);
+        startActivity(intent);
     }
 
     @Override
