@@ -39,14 +39,20 @@ public class MyDbManager {
         db.insert(MyConstants.TABLE_NAME, null, cv);
     }
 
-    public List<ListItem> getFromDb() {
-        /*Считывает данные из БД*/
+    public List<ListItem> getFromDb(String searchText) {
+        /*
+        * Считывает данные из БД
+        * */
         List<ListItem> tempList = new ArrayList<>();
+        String selection = MyConstants.TITLE + " like ?";
         Cursor cursor = db.query(
                 MyConstants.TABLE_NAME,
                 null,
-                null,
-                null,
+                // передаем, то почему мы будем делать запрос
+                selection,
+                // ищет title по буквам слова с строке поиск
+                // знаки процента не нужны если нужен поиск по слову, а не по букве
+                new String[] {"%" + searchText + "%"},
                 null,
                 null,
                 null
