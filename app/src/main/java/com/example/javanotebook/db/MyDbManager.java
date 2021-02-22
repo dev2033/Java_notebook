@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.javanotebook.adapter.ListItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +39,9 @@ public class MyDbManager {
         db.insert(MyConstants.TABLE_NAME, null, cv);
     }
 
-    public List<String> getFromDb() {
+    public List<ListItem> getFromDb() {
         /*Считывает данные из БД*/
-        List<String> tempList = new ArrayList<>();
+        List<ListItem> tempList = new ArrayList<>();
         Cursor cursor = db.query(
                 MyConstants.TABLE_NAME,
                 null,
@@ -50,8 +52,16 @@ public class MyDbManager {
                 null
         );
         while(cursor.moveToNext()) {
+            ListItem item = new ListItem();
+            // выбираем поля из таблицы
             String title = cursor.getString(cursor.getColumnIndex(MyConstants.TITLE));
-            tempList.add(title);
+            String desc = cursor.getString(cursor.getColumnIndex(MyConstants.DESC));
+            String uri = cursor.getString(cursor.getColumnIndex(MyConstants.URI));
+            item.setTitle(title);
+            item.setDesc(desc);
+            item.setUri(uri);
+            // добавляет в список title, description и uri
+            tempList.add(item);
         }
         cursor.close();
         return tempList;

@@ -12,8 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.javanotebook.adapter.ListItem;
+import com.example.javanotebook.db.MyConstants;
 import com.example.javanotebook.db.MyDbManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -29,6 +33,8 @@ public class EditActivity extends AppCompatActivity {
     private ConstraintLayout imageContainer;
     private FloatingActionButton fbAddImage;
     private ImageView imNewImage;
+
+    private boolean isEditState = true;
 //    private ImageButton imEditImage, imDeleteImage;
 
     @Override
@@ -36,6 +42,7 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         init();
+        getMyIntents();
     }
 
     private void init() {
@@ -45,6 +52,22 @@ public class EditActivity extends AppCompatActivity {
         imageContainer = findViewById(R.id.imageContainer);
         myDbManager = new MyDbManager(this);
         fbAddImage = findViewById(R.id.fbAddImage);
+    }
+
+    private void getMyIntents() {
+        Intent intent = getIntent();
+        if(intent != null) {
+            // получаем наш item
+            ListItem item = (ListItem) intent.getSerializableExtra(MyConstants.LIST_ITEM_INTENT);
+            isEditState = intent.getBooleanExtra(MyConstants.EDIT_STATE, true);
+
+            // проверяем если isEditState = false, то при клике на элемент
+            // списка показывает сам объект(title и description)
+            if (!isEditState) {
+                edTitle.setText(item.getTitle());
+                edDesc.setText(item.getDesc());
+            }
+        }
     }
 
     @Override
