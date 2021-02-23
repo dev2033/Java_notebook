@@ -34,9 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*Редактироване меню, добален поиск по элементам списка*/
         getMenuInflater().inflate(R.menu.main_menu, menu);
         MenuItem item = menu.findItem(R.id.id_search);
         SearchView sv = (SearchView) item.getActionView();
+        // setOnQueryTextListener - слушатель нажатий
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             // данная функция делает поиск только по нажатию на клавишу поиск на клавиатуре

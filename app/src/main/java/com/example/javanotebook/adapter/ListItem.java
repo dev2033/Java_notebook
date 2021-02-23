@@ -7,7 +7,7 @@ public class ListItem implements Serializable {
     /*Получение всех данных от одного объекта*/
     private String title;
     private String desc;
-    private String uri;
+    private String uri = "empty";
     private int id = 0;
 
     public String getTitle() {

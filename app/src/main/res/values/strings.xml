@@ -2,4 +2,5 @@
     <string name="app_name">Java notebook</string>
     <string name="text_empty">Заголовок или содержание не заполнено!</string>
     <string name="saved">Успешно сохранено!</string>
+    <string name="update">Успешно обновлено!</string>
 </resources>

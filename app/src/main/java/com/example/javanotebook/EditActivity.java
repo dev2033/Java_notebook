@@ -1,6 +1,8 @@
 package com.example.javanotebook;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -35,7 +37,10 @@ public class EditActivity extends AppCompatActivity {
     private ImageView imNewImage;
 
     private boolean isEditState = true;
-//    private ImageButton imEditImage, imDeleteImage;
+    private ImageButton imEditImage, imDeleteImage;
+
+    // выносим элемент на уровень класса чтобы для update достать ID
+    private ListItem item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +57,15 @@ public class EditActivity extends AppCompatActivity {
         imageContainer = findViewById(R.id.imageContainer);
         myDbManager = new MyDbManager(this);
         fbAddImage = findViewById(R.id.fbAddImage);
+        imEditImage = findViewById(R.id.imEditImage);
+        imDeleteImage = findViewById(R.id.imDeleteImage);
     }
 
     private void getMyIntents() {
         Intent intent = getIntent();
         if(intent != null) {
             // получаем наш item
-            ListItem item = (ListItem) intent.getSerializableExtra(MyConstants.LIST_ITEM_INTENT);
+            item = (ListItem) intent.getSerializableExtra(MyConstants.LIST_ITEM_INTENT);
             isEditState = intent.getBooleanExtra(MyConstants.EDIT_STATE, true);
 
             // проверяем если isEditState = false, то при клике на элемент
@@ -66,6 +73,21 @@ public class EditActivity extends AppCompatActivity {
             if (!isEditState) {
                 edTitle.setText(item.getTitle());
                 edDesc.setText(item.getDesc());
+
+                // проверяет если ссылка на картинку не empty (то есть картинка есть),
+                // то показываем картинку
+                if(!item.getUri().equals("empty")) {
+                    // tempUri = item.getUri(); - для того чтобы при update
+                    // картинка не оказалась пустой а отсталась такой же
+                    tempUri = item.getUri();
+                    imageContainer.setVisibility(View.VISIBLE);
+                    // Uri.parse() - превращает String в URI
+                    imNewImage.setImageURI(Uri.parse(item.getUri()));
+
+                    // убираем кнопки
+//                    imDeleteImage.setVisibility(View.GONE);
+//                    imEditImage.setVisibility(View.GONE);
+                }
             }
         }
     }
@@ -77,6 +99,7 @@ public class EditActivity extends AppCompatActivity {
         myDbManager.openDb();
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -85,8 +108,11 @@ public class EditActivity extends AppCompatActivity {
         // и данные(само изображения) были в порядке, в таком случает
         // показывает выбранное изображения в imageView
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_CODE && data != null) {
+            // получаем ссылку на фотографию
             tempUri = data.getData().toString();
             imNewImage.setImageURI(data.getData());
+            // ссылку на фотографию, которую мы получили из системы, делаем постоянной
+            getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
     }
 
@@ -97,10 +123,17 @@ public class EditActivity extends AppCompatActivity {
         if (title.equals("") || desc.equals("")) {
             Toast.makeText(this, R.string.text_empty, Toast.LENGTH_SHORT).show();
         } else {
-            myDbManager.insertToDb(title, desc, tempUri);
-            Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
-            finish();
+            // проверка на сохранение объекта: если сохрняется новый объект,
+            // то добавить его в БД, если изменяется старый, то обновить его
+            if (isEditState){
+                myDbManager.insertToDb(title, desc, tempUri);
+                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
+            } else {
+                myDbManager.updateItem(item.getId(), title, desc, tempUri);
+                Toast.makeText(this, R.string.update, Toast.LENGTH_SHORT).show();
+            }
             myDbManager.closeDb();
+            finish();
         }
     }
 
@@ -122,7 +155,8 @@ public class EditActivity extends AppCompatActivity {
         /*Загружает картинку*/
 
         // данный Intent ищет все места на смартфоне, где есть изображения
-        Intent chooser = new Intent(Intent.ACTION_PICK);
+        // ACTION_OPEN_DOCUMENT - получает постоянную ссылку, а ACTION_PICK - временную
+        Intent chooser = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         chooser.setType("image/*");
         startActivityForResult(chooser, PICK_IMAGE_CODE);
     }

@@ -12,8 +12,8 @@ import java.util.List;
 
 public class MyDbManager {
     /*
-    * Вспомогательный класс для работы с БД
-    * */
+     * Вспомогательный класс для работы с БД
+     * */
     private Context context;
     private MyDbHelper myDbHelper;
     private SQLiteDatabase db;
@@ -30,8 +30,8 @@ public class MyDbManager {
 
     public void insertToDb(String title, String desc, String uri) {
         /*
-        * Записывает данные в БД
-        * */
+         * Записывает данные в БД
+         * */
         ContentValues cv = new ContentValues();
         cv.put(MyConstants.TITLE, title);
         cv.put(MyConstants.DESC, desc);
@@ -41,18 +41,30 @@ public class MyDbManager {
         db.insert(MyConstants.TABLE_NAME, null, cv);
     }
 
+    public void updateItem(int id, String title, String desc, String uri) {
+        /*
+         * Обновляет элемент из списка по id
+         * */
+        String selection = MyConstants._ID + "=" + id;
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstants.TITLE, title);
+        cv.put(MyConstants.DESC, desc);
+        cv.put(MyConstants.URI, uri);
+        db.update(MyConstants.TABLE_NAME, cv, selection, null);
+    }
+
     public void delete(int id) {
         /*
-        * Удаляет элемент из списка по id
-        * */
+         * Удаляет элемент из списка по id
+         * */
         String selection = MyConstants._ID + "=" + id;
         db.delete(MyConstants.TABLE_NAME, selection, null);
     }
 
     public List<ListItem> getFromDb(String searchText) {
         /*
-        * Считывает данные из БД
-        * */
+         * Считывает данные из БД
+         * */
         List<ListItem> tempList = new ArrayList<>();
         String selection = MyConstants.TITLE + " like ?";
         Cursor cursor = db.query(
@@ -62,12 +74,12 @@ public class MyDbManager {
                 selection,
                 // ищет title по буквам слова с строке поиск
                 // знаки процента не нужны если нужен поиск по слову, а не по букве
-                new String[] {"%" + searchText + "%"},
+                new String[]{"%" + searchText + "%"},
                 null,
                 null,
                 null
         );
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             ListItem item = new ListItem();
             // выбираем поля из таблицы
             String title = cursor.getString(cursor.getColumnIndex(MyConstants.TITLE));
