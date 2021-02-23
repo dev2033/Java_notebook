@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.javanotebook.EditActivity;
 import com.example.javanotebook.R;
 import com.example.javanotebook.db.MyConstants;
+import com.example.javanotebook.db.MyDbManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,5 +91,20 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
         mainArray.clear();
         mainArray.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    public void removeItem(int pos, MyDbManager dbManager) {
+        /*
+        * Удаляет элемент по свайпу. Элемент удаляется по id,
+        * который передан в классе MyDbManager в функции getFromDb()
+        * */
+        // удаление из БД
+        dbManager.delete(mainArray.get(pos).getId());
+        // удаление из списка
+        mainArray.remove(pos);
+        // делаем список меньше на 1 удаленный
+        notifyItemRangeChanged(0, mainArray.size());
+        // говорим адаптеру, что мы удалили 1 элемент
+        notifyItemRemoved(pos);
     }
 }

@@ -34,7 +34,7 @@
         android:contentDescription="TODO"
         android:focusable="true"
         android:onClick="onClickAdd"
-        app:backgroundTint="#1DE9B6"
+        app:backgroundTint="#2EC59F"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/add_button"

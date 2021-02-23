@@ -99,7 +99,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+                /*
+                * Удаление элементов по свайпу
+                * */
+                // передаем сюда функцию адаптера и сам менеджер
+                // через viewHolder мы передается id элемента
+                mainAdapter.removeItem(viewHolder.getAdapterPosition(), myDbManager);
             }
         });
     }

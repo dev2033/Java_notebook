@@ -43,8 +43,10 @@ public class MyDbManager {
 
     public void delete(int id) {
         /*
-        * Удаляет данные из БД
+        * Удаляет элемент из списка по id
         * */
+        String selection = MyConstants._ID + "=" + id;
+        db.delete(MyConstants.TABLE_NAME, selection, null);
     }
 
     public List<ListItem> getFromDb(String searchText) {
@@ -71,9 +73,11 @@ public class MyDbManager {
             String title = cursor.getString(cursor.getColumnIndex(MyConstants.TITLE));
             String desc = cursor.getString(cursor.getColumnIndex(MyConstants.DESC));
             String uri = cursor.getString(cursor.getColumnIndex(MyConstants.URI));
+            int id = cursor.getInt(cursor.getColumnIndex(MyConstants._ID));
             item.setTitle(title);
             item.setDesc(desc);
             item.setUri(uri);
+            item.setId(id);
             // добавляет в список title, description и uri
             tempList.add(item);
         }
